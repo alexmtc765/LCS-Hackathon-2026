@@ -66,7 +66,7 @@ Note: If you using Onedrive on Windows, make sure you clone the repo to a folder
 | **📊 Productivity Dashboard** | Daily target tracking, work-time bar chart, and full session history table |
 | **💾 Persistent State** | Timer snapshots survive page refreshes via atomic JSON writes |
 | **🔊 Sound Alerts** | Plays `.mp3` alerts on interval transitions — choose between "Harsh" or "Relaxing" sound packs |
-| **🎨 Glassmorphism UI** | Custom CSS theme with responsive light & dark mode support |
+| **🎨 Clean UI** | Custom CSS theme with responsive light & dark mode support |
 | **🧹 Data Management** | Full data reset with a confirmation safeguard built into Settings |
 
 ---
