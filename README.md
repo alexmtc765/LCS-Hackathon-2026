@@ -7,7 +7,7 @@
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.x-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![JSON](https://img.shields.io/badge/Storage-JSON-F5A623?style=for-the-badge&logo=json&logoColor=white)](https://www.json.org/)
-[![Hackathon](https://img.shields.io/badge/LCS-Hack%20the%20Future%202026-7C3AED?style=for-the-badge)](https://github.com/Apollo8132)
+[![Hackathon](https://img.shields.io/badge/LCS-Hack%20the%20Future%202026-7C3AED?style=for-the-badge)](https://lauriercs.ca/hack-to-the-future)
 
 ---
 
