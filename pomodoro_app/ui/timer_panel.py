@@ -1,11 +1,12 @@
 import streamlit as st
 
-from pomodoro_app.state.session_state import active_task_key, get_active_task_data
+from pomodoro_app.state.session_state import active_task_key, get_active_task_data, persist_data
 from pomodoro_app.timer.controller import (
     get_remaining_seconds,
     pause_timer,
     reset_timer,
     resume_queue,
+    skip_to_next_interval,
     start_new_queue_for_active_task,
 )
 from pomodoro_app.timer.intervals import build_interval_queue, format_seconds
@@ -37,7 +38,7 @@ def render_timer_panel() -> None:
         )
         st.caption(f"Planned sequence: {preview}")
 
-    btn_col1, btn_col2, btn_col3 = st.columns(3)
+    btn_col1, btn_col2, btn_col3, btn_col4 = st.columns(4)
     task_is_complete = bool(active_task_data and active_task_data["is_complete"])
 
     current_key = active_task_key()
@@ -73,13 +74,26 @@ def render_timer_panel() -> None:
             st.rerun()
 
     with btn_col3:
+        skip_disabled = (
+            active_task_data is None
+            or task_is_complete
+            or not st.session_state.interval_queue
+            or st.session_state.current_task_key != current_key
+        )
+        if st.button("⏭ Skip To Next", disabled=skip_disabled, use_container_width=True):
+            skip_to_next_interval()
+            st.rerun()
+
+    with btn_col4:
         if active_task_data:
             if not task_is_complete:
                 if st.button("✅ Mark Task Complete", use_container_width=True):
                     active_task_data["is_complete"] = True
+                    persist_data()
                     reset_timer()
                     st.rerun()
             else:
                 if st.button("↩ Reopen Task", use_container_width=True):
                     active_task_data["is_complete"] = False
+                    persist_data()
                     st.rerun()

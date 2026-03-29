@@ -1,15 +1,19 @@
 import streamlit as st
 
+from pomodoro_app.state.session_state import get_groups
+
 
 def render_group_progress_panel() -> None:
     """Render active-group completion and per-task work-chunk progress."""
+    groups = get_groups()
+
     if not st.session_state.active_group:
         return
 
-    if st.session_state.active_group not in st.session_state.groups:
+    if st.session_state.active_group not in groups:
         return
 
-    group_data = st.session_state.groups[st.session_state.active_group]
+    group_data = groups[st.session_state.active_group]
     tasks = group_data["tasks"]
 
     st.subheader(f"📊 Group Progress — {st.session_state.active_group}")

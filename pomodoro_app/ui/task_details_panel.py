@@ -1,6 +1,6 @@
 import streamlit as st
 
-from pomodoro_app.state.session_state import get_active_task_data
+from pomodoro_app.state.session_state import get_active_task_data, persist_data
 from pomodoro_app.timer.controller import reset_timer
 
 
@@ -60,6 +60,8 @@ def render_active_task_panel() -> None:
         reset_timer()
         if active_task_data["completed_work_chunks"] < active_task_data["total_work_chunks"]:
             active_task_data["is_complete"] = False
+
+        persist_data()
 
         st.success("Task plan updated. Start again to run the new interval sequence.")
         st.rerun()

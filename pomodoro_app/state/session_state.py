@@ -1,16 +1,20 @@
 import streamlit as st
 
+from pomodoro_app.storage.json_store import load_data, save_data
+
 
 def init_state() -> None:
-    """Initialize all session-state keys used by the app exactly once."""
-    if "groups" not in st.session_state:
-        st.session_state.groups = {}
+    """Initialize runtime state and hydrated persisted data."""
+    if "data" not in st.session_state:
+        st.session_state.data = load_data()
+
+    runtime_state = st.session_state.data.get("runtime_state", {})
 
     if "active_group" not in st.session_state:
-        st.session_state.active_group = None
+        st.session_state.active_group = runtime_state.get("last_selected_group")
 
     if "active_task" not in st.session_state:
-        st.session_state.active_task = None
+        st.session_state.active_task = runtime_state.get("last_selected_task")
 
     if "timer_running" not in st.session_state:
         st.session_state.timer_running = False
@@ -42,6 +46,19 @@ def init_state() -> None:
     if "interval_transition_message" not in st.session_state:
         st.session_state.interval_transition_message = ""
 
+    if "pending_sound_event" not in st.session_state:
+        st.session_state.pending_sound_event = ""
+
+
+def get_groups() -> dict:
+    """Return persisted groups dictionary."""
+    return st.session_state.data["groups"]
+
+
+def persist_data() -> None:
+    """Save current in-memory data snapshot to disk."""
+    save_data(st.session_state.data)
+
 
 def active_task_key() -> tuple[str, str] | None:
     """Return selected task as a stable (group, task) tuple."""
@@ -59,7 +76,7 @@ def get_active_task_data() -> dict | None:
         return None
 
     group_name, task_name = key
-    group = st.session_state.groups.get(group_name)
+    group = get_groups().get(group_name)
     if not group:
         return None
 

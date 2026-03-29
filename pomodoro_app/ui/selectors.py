@@ -1,14 +1,21 @@
 import streamlit as st
 
-from pomodoro_app.timer.controller import reset_timer
+from pomodoro_app.state.session_state import get_groups
+from pomodoro_app.timer.controller import (
+    persist_last_selected_task_context,
+    reset_timer,
+    restore_runtime_snapshot_for_task,
+    save_current_runtime_snapshot,
+)
 
 
 def render_group_task_selectors() -> None:
     """Render active group/task selectors and reset timer on context switches."""
+    groups = get_groups()
     col_group, col_task = st.columns(2)
 
     with col_group:
-        group_options = list(st.session_state.groups.keys())
+        group_options = list(groups.keys())
         if group_options:
             group_index = (
                 group_options.index(st.session_state.active_group)
@@ -22,9 +29,11 @@ def render_group_task_selectors() -> None:
                 key="active_group_select",
             )
             if selected_group != st.session_state.active_group:
+                save_current_runtime_snapshot()
                 st.session_state.active_group = selected_group
                 st.session_state.active_task = None
                 reset_timer()
+                persist_last_selected_task_context()
                 st.rerun()
             else:
                 st.session_state.active_group = selected_group
@@ -33,8 +42,8 @@ def render_group_task_selectors() -> None:
             selected_group = None
 
     with col_task:
-        if selected_group and st.session_state.groups.get(selected_group):
-            task_options = list(st.session_state.groups[selected_group]["tasks"].keys())
+        if selected_group and groups.get(selected_group):
+            task_options = list(groups[selected_group]["tasks"].keys())
             if task_options:
                 task_index = (
                     task_options.index(st.session_state.active_task)
@@ -48,10 +57,17 @@ def render_group_task_selectors() -> None:
                     key="active_task_select",
                 )
                 if selected_task != st.session_state.active_task:
+                    save_current_runtime_snapshot()
                     st.session_state.active_task = selected_task
-                    reset_timer()
+                    restored = restore_runtime_snapshot_for_task(
+                        (st.session_state.active_group, selected_task)
+                    )
+                    if not restored:
+                        reset_timer()
+                    persist_last_selected_task_context()
                     st.rerun()
                 else:
                     st.session_state.active_task = selected_task
+                    persist_last_selected_task_context()
             else:
                 st.info("Add a task to this group first.")
