@@ -37,10 +37,14 @@ def play_audio_event_if_needed() -> None:
     if not event_name:
         return
 
+    # Consume the event and any tone override so we can play harsh/relaxing independently
+    # of the global user setting.
+    tone_override = st.session_state.get("pending_sound_tone", "")
     st.session_state.pending_sound_event = ""
+    st.session_state.pending_sound_tone = ""
 
     settings = st.session_state.data.get("settings", {})
-    sound_type = settings.get("sound_type", "Relaxing")
+    sound_type = tone_override if tone_override else settings.get("sound_type", "Relaxing")
 
     audio_path = _pick_sound_file(sound_type, event_name)
     if audio_path is None:

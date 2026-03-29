@@ -49,6 +49,24 @@ def init_state() -> None:
     if "pending_sound_event" not in st.session_state:
         st.session_state.pending_sound_event = ""
 
+    if "pending_sound_tone" not in st.session_state:
+        st.session_state.pending_sound_tone = ""
+
+    if "transition_phase" not in st.session_state:
+        st.session_state.transition_phase = False
+
+    if "transition_target_index" not in st.session_state:
+        st.session_state.transition_target_index = None
+
+    if "transition_sound_event" not in st.session_state:
+        st.session_state.transition_sound_event = ""
+
+    if "transition_sound_active" not in st.session_state:
+        st.session_state.transition_sound_active = False
+
+    if "transition_sound_tone" not in st.session_state:
+        st.session_state.transition_sound_tone = ""
+
 
 def get_groups() -> dict:
     """Return persisted groups dictionary."""

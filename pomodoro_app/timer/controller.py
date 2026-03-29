@@ -287,6 +287,10 @@ def advance_interval_or_finish() -> None:
     End current interval and transition to next one, or finish task.
 
     Final work chunk completion marks task complete and triggers celebration.
+    Uses a 10s transition phase with appropriate sounds:
+    - Work ends -> Break starts: play relaxing sound
+    - Break ends -> Work starts: play harsh sound
+    - Task ends: play relaxing sound
     """
     queue = st.session_state.interval_queue
     idx = st.session_state.current_interval_index
@@ -307,30 +311,42 @@ def advance_interval_or_finish() -> None:
         clear_runtime_snapshot_for_task(st.session_state.current_task_key)
         reset_timer()
         st.session_state.session_just_completed = True
+        # Task ends: play relaxing sound for 10s
         st.session_state.pending_sound_event = "task_end"
+        st.session_state.pending_sound_tone = "Relaxing"
         return
 
     next_idx = idx + 1
     next_interval = queue[next_idx]
 
-    st.session_state.current_interval_index = next_idx
-    st.session_state.timer_remaining_at_start = float(next_interval["seconds"])
+    # Enter 10s transition phase with appropriate sound
+    st.session_state.transition_phase = True
+    st.session_state.transition_target_index = next_idx
+    st.session_state.transition_sound_active = True
+    st.session_state.timer_remaining_at_start = 10.0
     st.session_state.timer_start_time = time.time()
     st.session_state.timer_running = True
-    sync_interval_metadata()
-    save_current_runtime_snapshot()
-    persist_data()
 
     if next_interval["kind"] == "break":
+        # Work ends -> Break starts: play relaxing sound
+        st.session_state.transition_sound_event = "work_end"
+        st.session_state.transition_sound_tone = "Relaxing"
+        st.session_state.pending_sound_tone = "Relaxing"
         st.session_state.interval_transition_message = (
-            f"Work chunk finished. {next_interval['label']} is starting."
+            f"Work chunk finished. {next_interval['label']} starting in 10s."
         )
-        st.session_state.pending_sound_event = "work_end"
     else:
+        # Break ends -> Work starts: play harsh sound
+        st.session_state.transition_sound_event = "break_end"
+        st.session_state.transition_sound_tone = "Harsh"
+        st.session_state.pending_sound_tone = "Harsh"
         st.session_state.interval_transition_message = (
-            f"Break finished. {next_interval['label']} is starting."
+            f"Break finished. {next_interval['label']} starting in 10s."
         )
-        st.session_state.pending_sound_event = "break_end"
+
+    st.session_state.pending_sound_event = st.session_state.transition_sound_event
+    save_current_runtime_snapshot()
+    persist_data()
 
 
 def skip_to_next_interval() -> None:
@@ -352,23 +368,41 @@ def skip_to_next_interval() -> None:
         clear_runtime_snapshot_for_task(st.session_state.current_task_key)
         reset_timer()
         st.session_state.session_just_completed = True
+        # Task ends: play relaxing sound for 10s
         st.session_state.pending_sound_event = "task_end"
+        st.session_state.pending_sound_tone = "Relaxing"
         persist_data()
         return
 
     next_idx = idx + 1
     next_interval = queue[next_idx]
 
-    st.session_state.current_interval_index = next_idx
-    st.session_state.timer_remaining_at_start = float(next_interval["seconds"])
+    # Enter 10s transition phase with appropriate sound
+    st.session_state.transition_phase = True
+    st.session_state.transition_target_index = next_idx
+    st.session_state.transition_sound_active = True
+    st.session_state.timer_remaining_at_start = 10.0
     st.session_state.timer_start_time = time.time()
     st.session_state.timer_running = True
-    sync_interval_metadata()
-    st.session_state.interval_transition_message = f"Skipped to {next_interval['label']}."
+
     if next_interval["kind"] == "break":
-        st.session_state.pending_sound_event = "work_end"
+        # Work ends -> Break starts: play relaxing sound
+        st.session_state.transition_sound_event = "work_end"
+        st.session_state.transition_sound_tone = "Relaxing"
+        st.session_state.pending_sound_tone = "Relaxing"
+        st.session_state.interval_transition_message = (
+            f"Skipped: {next_interval['label']} starting in 10s."
+        )
     else:
-        st.session_state.pending_sound_event = "break_end"
+        # Break ends -> Work starts: play harsh sound
+        st.session_state.transition_sound_event = "break_end"
+        st.session_state.transition_sound_tone = "Harsh"
+        st.session_state.pending_sound_tone = "Harsh"
+        st.session_state.interval_transition_message = (
+            f"Skipped: {next_interval['label']} starting in 10s."
+        )
+
+    st.session_state.pending_sound_event = st.session_state.transition_sound_event
     save_current_runtime_snapshot()
     persist_data()
 
@@ -376,6 +410,38 @@ def skip_to_next_interval() -> None:
 def process_timer_zero_crossing() -> None:
     """Advance queue immediately when countdown reaches 00:00."""
     if st.session_state.timer_running and get_remaining_seconds() <= 0:
+        # If we're in a transition phase, finalize the transition and actually
+        # start the queued interval now.
+        if st.session_state.get("transition_phase"):
+            target = st.session_state.get("transition_target_index")
+            queue = st.session_state.interval_queue
+            if queue and target is not None and 0 <= target < len(queue):
+                st.session_state.current_interval_index = int(target)
+                next_interval = queue[st.session_state.current_interval_index]
+                st.session_state.timer_remaining_at_start = float(next_interval["seconds"])
+                st.session_state.timer_start_time = time.time()
+                st.session_state.timer_running = True
+                st.session_state.transition_phase = False
+                st.session_state.transition_target_index = None
+                st.session_state.transition_sound_event = ""
+                st.session_state.transition_sound_active = False
+                st.session_state.pending_sound_event = ""
+                st.session_state.pending_sound_tone = ""
+                st.session_state.interval_transition_message = f"Starting {next_interval['label']}"
+                sync_interval_metadata()
+                save_current_runtime_snapshot()
+                persist_data()
+                return
+            else:
+                # Malformed transition state; reset to safe defaults.
+                st.session_state.transition_phase = False
+                st.session_state.transition_target_index = None
+                st.session_state.transition_sound_event = ""
+                st.session_state.transition_sound_active = False
+                reset_timer()
+                return
+
+        # Normal non-transition boundary behavior.
         advance_interval_or_finish()
 
 
@@ -384,5 +450,14 @@ def run_timer_tick() -> None:
     if st.session_state.timer_running:
         # Snapshot every tick so refresh restores near-real-time progress.
         save_current_runtime_snapshot()
+
+        # If we're in the brief transition phase, repeatedly set the pending
+        # sound event so the audio keeps playing across reruns for the full
+        # transition duration (approx. 10 seconds). This will trigger the
+        # front-end audio player on each rerun.
+        if st.session_state.get("transition_phase") and st.session_state.get("transition_sound_event"):
+            st.session_state.pending_sound_event = st.session_state.transition_sound_event
+            st.session_state.pending_sound_tone = st.session_state.get("transition_sound_tone", "")
+
         time.sleep(1)
         st.rerun()
