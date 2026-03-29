@@ -1,5 +1,7 @@
 import json
 import os
+import tempfile
+import time
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
@@ -101,12 +103,41 @@ def load_data() -> dict:
 
 
 def save_data(data: dict) -> None:
-    """Persist data atomically to reduce risk of partial writes."""
+    """Persist data atomically to reduce risk of partial writes.
+
+    Uses a unique temp file and retries replacement to tolerate transient
+    file locking on Windows (e.g., antivirus or concurrent readers).
+    """
     normalized = _normalize_data(data)
     DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
 
-    temp_file = DATA_FILE.with_suffix(".tmp")
-    with temp_file.open("w", encoding="utf-8") as outfile:
-        json.dump(normalized, outfile, indent=2)
+    fd, temp_path = tempfile.mkstemp(
+        dir=str(DATA_FILE.parent),
+        prefix=f"{DATA_FILE.stem}.",
+        suffix=".tmp",
+    )
 
-    temp_file.replace(DATA_FILE)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as outfile:
+            json.dump(normalized, outfile, indent=2)
+            outfile.flush()
+            os.fsync(outfile.fileno())
+
+        last_error = None
+        for attempt in range(6):
+            try:
+                os.replace(temp_path, DATA_FILE)
+                return
+            except PermissionError as exc:
+                last_error = exc
+                # Exponential backoff: 50ms -> 1.6s max.
+                time.sleep(0.05 * (2**attempt))
+
+        if last_error is not None:
+            raise last_error
+    finally:
+        try:
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+        except OSError:
+            pass
