@@ -2,17 +2,16 @@
 
 # 🪤 FinIt
 
-**A modular Pomodoro productivity timer — built for the [LCS Hack the Future 2026](https://github.com/Apollo8132) hackathon.**
+**A feature packed productivity app — built for the [LCS Hack the Future 2026](https://github.com/Apollo8132) hackathon.**
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.x-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![JSON](https://img.shields.io/badge/Storage-JSON-F5A623?style=for-the-badge&logo=json&logoColor=white)](https://www.json.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge)](LICENSE)
-[![Hackathon](https://img.shields.io/badge/LCS-Hack%20the%20Future%202026-7C3AED?style=for-the-badge)](https://github.com/Apollo8132)
+[![Hackathon](https://img.shields.io/badge/LCS-Hack%20the%20Future%202026-7C3AED?style=for-the-badge)](https://lauriercs.ca/hack-to-the-future)
 
 ---
 
-*Stay focused. Stay on track. FinIt.*
+*Stay focused. Use FinIt 🪤*
 
 </div>
 
@@ -23,6 +22,37 @@
 **FinIt** is a feature packed productivity app to help you stay focused.
 
 FinIt lets you organise your work into **groups** and **tasks**, custom-configure work/break intervals per task, and watch your progress in real time. Every session is persisted locally so nothing is lost on a page refresh — even mid-timer.
+
+---
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Python 3.10+
+- `pip`
+
+### Installation
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/Apollo8132/LCS-Hackathon-2026.git
+cd LCS-Hackathon-2026
+
+# 2. (Recommended) Create a virtual environment
+python -m venv .venv
+source .venv/bin/activate       # macOS/Linux
+# .venv\Scripts\activate        # Windows
+
+# 3. Install dependencies
+pip install streamlit
+
+# 4. Run the app
+streamlit run app.py
+```
+
+The app will open automatically in your browser at `http://localhost:8501`.
+
+Note: If you using Onedrive on Windows, make sure you clone the repo to a folder not synced by Onedrive or else you will have problems.
 
 ---
 
@@ -64,42 +94,14 @@ FinIt lets you organise your work into **groups** and **tasks**, custom-configur
 
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Python 3.10+
-- `pip`
-
-### Installation
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/Apollo8132/LCS-Hackathon-2026.git
-cd LCS-Hackathon-2026
-
-# 2. (Recommended) Create a virtual environment
-python -m venv .venv
-source .venv/bin/activate       # macOS/Linux
-# .venv\Scripts\activate        # Windows
-
-# 3. Install dependencies
-pip install streamlit
-
-# 4. Run the app
-streamlit run app.py
-```
-
-The app will open automatically in your browser at `http://localhost:8501`.
-
-### Adding Sounds *(optional)*
+### Adding Custom Sounds *(optional)*
 
 Drop `.mp3` files into the appropriate folder to enable audio alerts:
 
 ```
 sounds/
 ├── harsh/       ← "Harsh" sound pack (e.g. alarm tones)
-└── relaxing/    ← "Relaxing" sound pack (e.g. gentle chimes)
+└── relaxing/    ← "Relaxing" sound pack (e.g. gentle sounds)
 ```
 
 Files are matched by event name prefix (`work_end`, `break_end`, `task_end`) or chosen randomly if no prefix match is found.
@@ -126,11 +128,11 @@ Each task defines:
 
 ### Data Persistence
 
-All data is stored locally in `data.json` using an atomic write strategy (`.tmp` → `replace()`) to prevent corruption. If a corrupt file is detected, a timestamped backup is created automatically and the app resets to safe defaults.
+All data is stored locally in `data.json`.
 
-### Snapshot System
+### Persistance
 
-Timer state (queue, interval index, remaining seconds) is saved on every tick, meaning a full page refresh or accidental close will restore the timer exactly where it left off.
+Tasks and groups are saved and are persistant between reloading.
 
 ---
 
@@ -163,7 +165,7 @@ LCS-Hackathon-2026/
         ├── settings_panel.py       # Settings tab & danger zone
         ├── sidebar_management.py   # Group/task CRUD sidebar
         ├── task_details_panel.py   # Active task metrics & editor
-        ├── theme.py                # Glassmorphism CSS
+        ├── theme.py                # UI Theme
         └── timer_panel.py          # Timer display & controls
 ```
 
@@ -190,5 +192,5 @@ LCS-Hackathon-2026/
 ---
 
 <div align="center">
-  <em>Made with ☕ and 🪤</em>
+  <em>Made with ☕ and 🥲</em>
 </div>

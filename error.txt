@@ -1,0 +1,17 @@
+PermissionError: [WinError 5] Access is denied: 'C:\\Users\\dotue\\Hackaton\\LCS-Hackathon-2026\\data.tmp' -> 'C:\\Users\\dotue\\Hackaton\\LCS-Hackathon-2026\\data.json'
+
+File "C:\Users\dotue\Hackaton\LCS-Hackathon-2026\app.py", line 26, in <module>
+    process_timer_zero_crossing()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+File "C:\Users\dotue\Hackaton\LCS-Hackathon-2026\pomodoro_app\timer\controller.py", line 433, in process_timer_zero_crossing
+    persist_data()
+    ~~~~~~~~~~~~^^
+File "C:\Users\dotue\Hackaton\LCS-Hackathon-2026\pomodoro_app\state\session_state.py", line 78, in persist_data
+    save_data(st.session_state.data)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\dotue\Hackaton\LCS-Hackathon-2026\pomodoro_app\storage\json_store.py", line 112, in save_data
+    temp_file.replace(DATA_FILE)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+File "C:\Users\dotue\AppData\Local\Programs\Python\Python314\Lib\pathlib\__init__.py", line 1091, in replace
+    os.replace(self, target)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
