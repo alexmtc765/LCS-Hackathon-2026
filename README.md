@@ -2,7 +2,7 @@
 
 # 🪤 FinIt
 
-**A feature packed productivity app — built for the [LCS Hack the Future 2026](https://github.com/Apollo8132) hackathon.**
+**A feature packed privacy focused productivity app — built for the [LCS Hack the Future 2026](https://github.com/Apollo8132) hackathon.**
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.x-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
@@ -21,7 +21,7 @@
 
 **FinIt** is a feature packed productivity app to help you stay focused.
 
-FinIt lets you organise your work into **groups** and **tasks**, custom-configure work/break intervals per task, and watch your progress in real time. Every session is persisted locally so nothing is lost on a page refresh — even mid-timer.
+FinIt lets you organise your work into **groups** and **tasks**, custom-configure work/break intervals per task, and watch your progress in real time. Everything is saved locally ensuring that you don't lose your progress or have to worry about privacy.
 
 ---
 ## 🚀 Getting Started
