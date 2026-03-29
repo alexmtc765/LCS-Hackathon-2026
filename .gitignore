@@ -1,4 +1,9 @@
 .venv
 data.json
-.__pycache__
 .DS_store
+
+__pycache__/
+*.py[codz]
+*$py.class
+
+*.pyc
