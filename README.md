@@ -2,7 +2,7 @@
 
 # 🪤 FinIt
 
-**A modular Pomodoro productivity timer — built for the [LCS Hack the Future 2026](https://github.com/Apollo8132) hackathon.**
+**A feature packed productivity app — built for the [LCS Hack the Future 2026](https://github.com/Apollo8132) hackathon.**
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.x-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
