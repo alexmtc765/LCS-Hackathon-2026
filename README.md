@@ -20,9 +20,9 @@
 
 ## 📖 Overview
 
-**FinIt** is a feature-rich Pomodoro timer application with deep task and group management, live productivity dashboards, and session history tracking — all packaged in a clean, glassmorphic web UI powered by Streamlit.
+**FinIt** is a feature packed productivity app to help you stay focused.
 
-Unlike a basic timer, FinIt lets you organise your work into **groups** and **tasks**, custom-configure work/break intervals per task, and watch your progress in real time. Every session is persisted locally so nothing is lost on a page refresh — even mid-timer.
+FinIt lets you organise your work into **groups** and **tasks**, custom-configure work/break intervals per task, and watch your progress in real time. Every session is persisted locally so nothing is lost on a page refresh — even mid-timer.
 
 ---
 
@@ -180,10 +180,13 @@ LCS-Hackathon-2026/
 
 ---
 
-## 👤 Author
+## 👤 Author's
 
 **Apollo8132** — built for the **LCS Hack the Future 2026** hackathon.
-
+- Alexandru Motoc
+- Omar Naveed
+- Dotayen Degen
+- Christian Lara
 ---
 
 <div align="center">
