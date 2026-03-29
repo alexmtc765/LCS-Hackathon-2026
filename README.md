@@ -53,6 +53,8 @@ streamlit run app.py
 
 The app will open automatically in your browser at `http://localhost:8501`.
 
+Note: If you using Onedrive on Windows, make sure you clone the repo to a folder not synced by Onedrive or else you will have problems.
+
 ---
 
 ## ✨ Features
