@@ -191,5 +191,5 @@ LCS-Hackathon-2026/
 ---
 
 <div align="center">
-  <em>Made with ☕ and 🪤</em>
+  <em>Made with ☕ and 🥲</em>
 </div>
